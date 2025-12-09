@@ -34,7 +34,9 @@ void InPutError() // 문자를 받았을때 버퍼(힙 영역에 존재)에 남�
 
 void setPotion(int count, int* p_HPPotion, int* p_MPPotion)
 {
-
+    
+    *p_HPPotion = count;
+    *p_MPPotion = count;
 }
 
 enum Stat
@@ -51,7 +53,10 @@ int main()
 {
     int status[4] = {};  //[0] : HP, [1] : MP, [2] : Atk, [3] : Def
     int HpPotion;
-    int MPPotion;
+    int MpPotion;
+    setPotion(5, &HpPotion, &MpPotion);
+    int temp=0;
+    bool isEnd=0;
 
     cout << "HP와 MP를 입력해주세요(둘 다 50이상이 되어야 합니다.)" << endl;
     cin >> status[HP];
@@ -93,37 +98,107 @@ int main()
         }
 
     }
-short statmanage = -1;
+    
+    do {
+
+        short statmanage;
         cout << "스탯 관리 시스템을 시작합니다." << endl;
         cout << " - 1. HP UP 2. MP UP 3. 공격력 UP 4. 방어력 UP 5. 현재 능력치 6. Level Up 0. 나가기" << endl;
         cin >> statmanage;
-    do {
-         
-        if (statmanage < 0 || statmanage > 6 || cin.fail())
+        while (1)
         {
-            cout << "올바른 값을 입력하세요" << endl;
-            InPutError();
-            cin >> statmanage;
-            continue;
+            if (statmanage < 0 || statmanage > 6 || cin.fail())
+            {
+                cout << "올바른 값을 입력하세요" << endl;
+                InPutError();
+                cin >> statmanage;
+                
+            }
+            else
+            {
+                break;
+            }
         }
         switch (statmanage)
         {
         case 1:
+            if (HpPotion)
+            {
+                HpPotion--;
+                cout << " HP포션을 사용합니다. 남은 포션개수 : " << HpPotion << "개" << endl;
+                status[HP] += 20;
+                cout << "체력이 20 상승했습니다. 현재 체력 :" << status[HP] << endl;
+            }
+            else
+            {
+                cout << "포션이 없습니다." << endl;
+            }
             break;
         case 2:
+            if (MpPotion)
+            {
+                MpPotion--;
+                cout << " MP포션을 사용합니다. 남은 포션개수 : " << MpPotion << "개" << endl;
+                status[MP] += 20;
+                cout << "마나가 20 상승했습니다. 현재 체력 :" << status[MP] << endl;
+            }
+            else
+            {
+                cout << "포션이 없습니다." << endl;
+            }
             break;
         case 3:
+            temp = status[Atk] << 1; //비트 연산자로 2배 증가
+            if (temp > 0) //변화된 값이 음수가 나오면 대입하지않기(오버플로우)
+            { status[Atk] = status[Atk] << 1;}
+            else
+            {
+                cout << "더 이상 증가하지 않습니다" << endl;
+            }
+            //status[Atk] *= 2; // 그냥 2 곱해서 대입
+            cout << "공격력이 2배 증가했습니다. 현재 공격력 : " << status[Atk] << endl;
             break;
         case 4:
+            temp = status[Def] << 1; //비트 연산자로 2배 증가
+            if (temp > 0) //변화된 값이 음수가 나오면 대입하지않기(오버플로우)
+            {
+                status[Def] = status[Def] << 1;
+            }
+            else
+            {
+                cout << "더 이상 증가하지 않습니다" << endl;
+            }
+            //status[Def] *= 2; // 그냥 2 곱해서 대입
+            cout << "방어력이 2배 증가했습니다. 현재 방어력 : " << status[Atk] << endl;
             break;
         case 5:
+            cout << "-------------------------" << endl;
+            cout << "현재 체력 : " << status[HP] << endl;
+            cout << "현재 마나 : " << status[MP] << endl;
+            cout << "현재 공격력 : " << status[Atk] << endl;
+            cout << "현재 방어력 : " << status[Def] << endl;
+            cout << endl; // 빈 줄 띄우기
+            cout << "남은 포션 개수" << endl;
+            cout << "체력포션 : " << HpPotion << "개" << endl;
+            cout << "마나포션 : " << MpPotion << "개" << endl;
+            cout << endl; // 빈 줄 띄우기
+            cout << "----------------------------" << endl;
             break;
         case 6:
+            cout << "레벨업! 포션이 각각 하나씩 충전되었습니다." << endl;
+            HpPotion++;
+            MpPotion++;
+            cout << "체력포션 : " << HpPotion << "개" << endl;
+            cout << "마나포션 : " << MpPotion << "개" << endl;
+            break;
+        case 0:
+            cout << "종료하겠습니다" << endl;
+            isEnd = 1;
             break;
         }
 
-        cout << "루프확인용" << endl;
-    } while (1);
+        cout << endl << endl;;
+    } while (!isEnd);
 
 
 
